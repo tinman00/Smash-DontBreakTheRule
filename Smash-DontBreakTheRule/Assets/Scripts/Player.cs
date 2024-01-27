@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    public static List<Player> list = new();
     public int id;
     [SerializeField] private int totalLifeCount = 10;
     [SerializeField] private int maxHP = 20;
@@ -15,8 +16,9 @@ public class Player : MonoBehaviour
     [Header("Conponents")]
     private Rigidbody2D rb;
     private BoxCollider2D coll;
-    private Animator anim;
+    public Animator anim;
     private PlayerMovement move;
+    public PlayerItemStorage items;
 
     public PlayerState state = new();
     private float stunedTime = 0f;
@@ -26,11 +28,13 @@ public class Player : MonoBehaviour
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         move = GetComponent<PlayerMovement>();
+        items = GetComponent<PlayerItemStorage>();
         hp = maxHP;
+        list.Add(this);
     }
 
     private void Update() {
-        if (state.blocking || state.attacking || state.hurted || state.stuned || state.reviving) {
+        if (state.hurted || state.stuned || state.reviving) {
             Freeze();
         } else {
             Unfreeze();
@@ -44,19 +48,29 @@ public class Player : MonoBehaviour
         }
     }
 
+    public bool CanPick() {
+        return items.CanAdd();
+    }
+
+    public void AddPickup(PickUp pickup) {
+        items.Add(pickup);
+    }
+
     public void Freeze() {
         state.canMove = false;
         state.canFlip = false;
+        state.canUseSkill = false;
     }
 
     public void Unfreeze() {
         state.canMove = true;
         state.canFlip = true;
+        state.canUseSkill = true;
     }
 
     public void Attacked(int damage, Vector2 direction, Player src)
     {
-        if (this.state.died) return;
+        if (state.died || state.reviving) return;
         if (src == null) {
             hp -= damage;
         } else {

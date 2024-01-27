@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
 
     [Header("Movement Variables")]
     [SerializeField] private float moveSpeed = 12f;
+    [SerializeField] private float slowedMoveSpeed = 13f;
     private Vector2 dir;
     private bool facingRight = true;
     public bool freeze = false;
@@ -60,6 +61,13 @@ public class PlayerMovement : MonoBehaviour {
     [Header("Knockback Variables")]
     private List<KnockBack> knockbacks = new();
 
+    [Header("Shoe")]
+    private float lastShoe = 0f;
+    [SerializeField] private float shoeTime = 10f;
+    [SerializeField] private float shoeBoost = 1.5f;
+    private bool shoe = false;
+
+
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
@@ -79,6 +87,9 @@ public class PlayerMovement : MonoBehaviour {
         Jump();
         JumpPhysics();
         Fall();
+        if (Time.time > lastShoe + shoeTime) {
+            shoe = false;
+        }
     }
 
     private void GetInput() {
@@ -88,11 +99,16 @@ public class PlayerMovement : MonoBehaviour {
     private void Flip() {
         plr.state.isFacingRight = facingRight;
         if (!plr.state.canFlip) return;
+        if (plr.state.attacking || plr.state.blocking) return;
         if (dir.x == 0f) return;
         if (facingRight ^ dir.x > 0f) {
             facingRight = !facingRight;
             transform.Rotate(new Vector3(0f, 180f, 0f));
         }
+    }
+    public void AddShoe() {
+        lastShoe = Time.time;
+        shoe = true;
     }
 
     private void CheckCollision() {
@@ -168,14 +184,21 @@ public class PlayerMovement : MonoBehaviour {
     private void MoveCharacter() {
         // anim.SetBool("Running", dir.x != 0f);
         // rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+        var spd = moveSpeed;
+        if (plr.state.attacking || plr.state.blocking) {
+            spd = slowedMoveSpeed;
+        }
         if (plr.state.canMove) {
-            rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+            rb.velocity = new(dir.x * spd, rb.velocity.y);
             anim.SetBool("Running", Mathf.Abs(dir.x) >= 0.1f);
         } else {
             if (!plr.state.hurted) {
                 rb.velocity = new(0, rb.velocity.y);
             }
             anim.SetBool("Running", false);
+        }
+        if (shoe) {
+            rb.velocity = new(rb.velocity.x * shoeBoost, rb.velocity.y);
         }
     }
     private void LateUpdate() {

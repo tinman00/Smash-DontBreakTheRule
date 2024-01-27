@@ -13,4 +13,5 @@ public class PlayerState
     public bool stuned;
     public bool died;
     public bool reviving;
+    public bool canUseSkill;
 }

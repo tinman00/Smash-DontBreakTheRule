@@ -7,18 +7,23 @@ public class PlayerCombat : MonoBehaviour {
     private int id = 0;
 
     [SerializeField] private Hitbox NrmAttHitbox;// Normal Attack 's Hitbox;
+    [SerializeField] private Hitbox SplAttHitbox;// Special Attack 's Hitbox;
+    [SerializeField] private GameObject Bomb;
+    [SerializeField] private float throwingForce;
 
     [Header("Conponents")]
     private Rigidbody2D rb;
     private BoxCollider2D coll;
     private Animator anim;
     private Player plr;
+    private PlayerMovement move;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
         plr = GetComponent<Player>();
+        move = GetComponent<PlayerMovement>();
         id = plr.id;
     }
 
@@ -29,6 +34,44 @@ public class PlayerCombat : MonoBehaviour {
             Block();
         } else {
             BlockEnd();
+        }
+        if (InputManager.instance.Skill2[id]) {
+            var item = plr.items.Use(1);
+            if (item == PickUp.None) return;
+            switch(item) {
+                case PickUp.Shield:
+                    break;
+                case PickUp.Shoe:
+                    move.AddShoe();
+                    break;
+                case PickUp.Mace:
+                    anim.SetBool("SpecialAttack", true);
+                    break;
+                case PickUp.Bomb:
+                    var obj = Instantiate(Bomb, transform.position, new Quaternion());
+                    obj.GetComponent<Rigidbody2D>().AddForce(
+                        (plr.state.isFacingRight ? Vector2.right : Vector2.left) * throwingForce, ForceMode2D.Impulse);
+                    break;
+            }
+        }
+        if (InputManager.instance.Skill1[id]) {
+            var item = plr.items.Use(0);
+            if (item == PickUp.None) return;
+            switch (item) {
+                case PickUp.Shield:
+                    break;
+                case PickUp.Shoe:
+                    move.AddShoe();
+                    break;
+                case PickUp.Mace:
+                    anim.SetBool("SpecialAttack", true);
+                    break;
+                case PickUp.Bomb:
+                    var obj = Instantiate(Bomb, transform.position, new Quaternion());
+                    obj.GetComponent<Rigidbody2D>().AddForce(
+                        (plr.state.isFacingRight ? Vector2.right : Vector2.left) * throwingForce, ForceMode2D.Impulse);
+                    break;
+            }
         }
     }
 
@@ -47,6 +90,22 @@ public class PlayerCombat : MonoBehaviour {
 
     public void DeactivateNrmHitbox() {
         NrmAttHitbox.Deactivate();
+    }
+    public void SpecialAttack() {
+        plr.state.attacking = true;
+    }
+
+    public void SpecialAttackEnd() {
+        plr.state.attacking = false;
+        anim.SetBool("SpecialAttack", false);
+    }
+
+    public void ActivateSplHitbox() {
+        SplAttHitbox.Activate();
+    }
+
+    public void DeactivateSplHitbox() {
+        SplAttHitbox.Deactivate();
     }
     public void Block()
     {
