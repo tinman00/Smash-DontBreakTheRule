@@ -13,6 +13,8 @@ public class InputManager : MonoBehaviour {
     public bool[] JumpEnd { get; private set; }
     public bool[] DownJump { get; private set; }
     public bool[] Attack { get; private set; }
+    public bool[] Skill1 { get; private set; }
+    public bool[] Skill2 { get; private set; }
 
     public bool[] Block { get; private set; }
 
@@ -31,15 +33,15 @@ public class InputManager : MonoBehaviour {
         Attack = new bool[2] { false, false };
         Block = new bool[2] { false, false };
         DownJump = new bool[2] { false, false };
+        Skill1 = new bool[2] { false, false };
+        Skill2 = new bool[2] { false, false };
     }
 
     private void Update() {
         float x1 = Input.GetAxis("Horizontal"), y1 = Input.GetAxis("Vertical");
-        // float x2 = Input.GetAxis("Horizontal"), y2 = Input.GetAxis("Vertical");
-        float x2 = 0f, y2 = 0f;
+        float x2 = Input.GetAxis("Horizontal1"), y2 = Input.GetAxis("Vertical1");
         float rx1 = Input.GetAxisRaw("Horizontal"), ry1 = Input.GetAxisRaw("Vertical");
-        // float rx2 = Input.GetAxisRaw("Horizontal"), ry2 = Input.GetAxisRaw("Vertical");
-        float rx2 = 0f, ry2 = 0f;
+        float rx2 = Input.GetAxisRaw("Horizontal1"), ry2 = Input.GetAxisRaw("Vertical1");
         GetAxisHorizontal[0] = x1;
         GetAxisHorizontal[1] = x2;
         GetAxisVertical[0] = y1;
@@ -51,21 +53,44 @@ public class InputManager : MonoBehaviour {
         Attack[0] = Attack[1] = false;
         Block[0] = Block[1] = false;
         DownJump[0] = DownJump[1] = false;
+        Skill1[0] = Skill1[1] = false;
+        Skill2[0] = Skill2[1] = false;
 
-        Jump[0] = Input.GetKey(KeyCode.Space);
-        JumpStart[0] = Input.GetKeyDown(KeyCode.Space);
-        JumpEnd[0] = Input.GetKeyUp(KeyCode.Space);
+        Jump[0] = Input.GetButton("Jump");
+        JumpStart[0] = Input.GetButtonDown("Jump");
+        JumpEnd[0] = Input.GetButtonUp("Jump");
 
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetButtonDown("Fire1")) {
             Attack[0] = true;
         }
-        if (Input.GetMouseButton(1))
+        if (Input.GetButton("Fire2"))
         {
             Block[0] = true;
         }
 
         if (ry1 < -0.25f && JumpStart[0]) {
             DownJump[0] = true;
+        }
+
+        Skill1[0] = Input.GetButtonDown("Skill11");
+        Skill2[0] = Input.GetButtonDown("Skill21");
+        Skill1[1] = Input.GetButtonDown("Skill12");
+        Skill2[1] = Input.GetButtonDown("Skill22");
+
+        Jump[1] = Input.GetButton("Jump1");
+        JumpStart[1] = Input.GetButtonDown("Jump1");
+        JumpEnd[1] = Input.GetButtonUp("Jump1");
+
+        if (Input.GetButtonDown("Fire11")) {
+            Attack[1] = true;
+        }
+        if (Input.GetButton("Fire21"))
+        {
+            Block[1] = true;
+        }
+
+        if (ry1 < -0.25f && JumpStart[1]) {
+            DownJump[1] = true;
         }
     }
 }

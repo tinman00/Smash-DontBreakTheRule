@@ -61,6 +61,13 @@ public class PlayerMovement : MonoBehaviour {
     [Header("Knockback Variables")]
     private List<KnockBack> knockbacks = new();
 
+    [Header("Shoe")]
+    private float lastShoe = 0f;
+    [SerializeField] private float shoeTime = 10f;
+    [SerializeField] private float shoeBoost = 1.5f;
+    private bool shoe = false;
+
+
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
@@ -80,6 +87,9 @@ public class PlayerMovement : MonoBehaviour {
         Jump();
         JumpPhysics();
         Fall();
+        if (Time.time > lastShoe + shoeTime) {
+            shoe = false;
+        }
     }
 
     private void GetInput() {
@@ -95,6 +105,10 @@ public class PlayerMovement : MonoBehaviour {
             facingRight = !facingRight;
             transform.Rotate(new Vector3(0f, 180f, 0f));
         }
+    }
+    public void AddShoe() {
+        lastShoe = Time.time;
+        shoe = true;
     }
 
     private void CheckCollision() {
@@ -182,6 +196,9 @@ public class PlayerMovement : MonoBehaviour {
                 rb.velocity = new(0, rb.velocity.y);
             }
             anim.SetBool("Running", false);
+        }
+        if (shoe) {
+            rb.velocity = new(rb.velocity.x * shoeBoost, rb.velocity.y);
         }
     }
     private void LateUpdate() {
