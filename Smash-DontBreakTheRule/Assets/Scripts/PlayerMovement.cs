@@ -14,6 +14,7 @@ public class PlayerMovement : MonoBehaviour {
 
     [Header("Movement Variables")]
     [SerializeField] private float moveSpeed = 12f;
+    [SerializeField] private float slowedMoveSpeed = 13f;
     private Vector2 dir;
     private bool facingRight = true;
     public bool freeze = false;
@@ -88,6 +89,7 @@ public class PlayerMovement : MonoBehaviour {
     private void Flip() {
         plr.state.isFacingRight = facingRight;
         if (!plr.state.canFlip) return;
+        if (plr.state.attacking || plr.state.blocking) return;
         if (dir.x == 0f) return;
         if (facingRight ^ dir.x > 0f) {
             facingRight = !facingRight;
@@ -168,8 +170,12 @@ public class PlayerMovement : MonoBehaviour {
     private void MoveCharacter() {
         // anim.SetBool("Running", dir.x != 0f);
         // rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+        var spd = moveSpeed;
+        if (plr.state.attacking || plr.state.blocking) {
+            spd = slowedMoveSpeed;
+        }
         if (plr.state.canMove) {
-            rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+            rb.velocity = new(dir.x * spd, rb.velocity.y);
             anim.SetBool("Running", Mathf.Abs(dir.x) >= 0.1f);
         } else {
             if (!plr.state.hurted) {

@@ -30,7 +30,7 @@ public class Player : MonoBehaviour
     }
 
     private void Update() {
-        if (state.blocking || state.attacking || state.hurted || state.stuned || state.reviving) {
+        if (state.hurted || state.stuned || state.reviving) {
             Freeze();
         } else {
             Unfreeze();
