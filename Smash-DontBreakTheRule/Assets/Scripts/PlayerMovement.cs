@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour {
+    [Header("Player ID")]
+    private int id = 0;
+
     [Header("Conponents")]
     private Rigidbody2D rb;
     private BoxCollider2D coll;
     private Animator anim;
+    private Player plr;
 
     [Header("Movement Variables")]
     [SerializeField] private float moveSpeed = 12f;
@@ -16,6 +20,7 @@ public class PlayerMovement : MonoBehaviour {
 
     [Header("Jump Variables")]
     [SerializeField] private float jumpSpeed = 15f;
+    [SerializeField] private float extraJumpSpeed = 12f;
     [SerializeField] private float minimumLimit = 0.08f;
     [SerializeField] private float peakTime = 0.25f;
     [SerializeField] private float maxFallingSpeed = 20f;
@@ -25,12 +30,14 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 jumpVelocity;
     private float jumpStart;
     private int jumpCount = 0;
-    private bool canJump => (grounded || Time.time - lastJumpTime <= airJumpBonus) || (jumpCount + 1 < jumpLimit);
+    private bool groundedJump => (grounded || Time.time - lastJumpTime <= airJumpBonus);
+    private bool canJump => groundedJump || (jumpCount + 1 < jumpLimit);
     private float lastJumpTime = float.NaN;
 
     [Header("Gound Collision Variables")]
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask ceilingLayer;
+    [SerializeField] private LayerMask platformLayer;
     private bool grounded;
     private bool roofed;
     private float boxHeight = 0.2f;
@@ -43,6 +50,8 @@ public class PlayerMovement : MonoBehaviour {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        plr = GetComponent<Player>();
+        id = plr.id;
     }
 
     // Update is called once per frame
@@ -58,7 +67,7 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void GetInput() {
-        dir = new Vector2(InputManager.instance.GetAxisHorizontal, InputManager.instance.GetAxisVertical);
+        dir = new Vector2(InputManager.instance.GetAxisHorizontal[id], InputManager.instance.GetAxisVertical[id]);
     }
 
     private void Flip() {
@@ -82,16 +91,33 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Jump() {
-        if (!InputManager.instance.Jump) {
+        if (!InputManager.instance.Jump[id]) {
             JumpEnd(true);
             return;
         }
-        if (!jumping && canJump && InputManager.instance.JumpStart) {
-            Debug.Log($"{jumpCount}");
-            jumpCount++;
+        if (!jumping && canJump && InputManager.instance.JumpStart[id]) {
+            var leftObj = Physics2D.Raycast(bottomCenter + Vector2.left * playerSize.x * 0.5f, Vector2.down, boxHeight, (~platformLayer) & groundLayer).collider;
+            var rightObj = Physics2D.Raycast(bottomCenter + Vector2.right * playerSize.x * 0.5f, Vector2.down, boxHeight, (~platformLayer) & groundLayer).collider;
+            if (groundedJump && InputManager.instance.DownJump[id] &&
+                leftObj == null &&
+                rightObj == null) {
+                leftObj = Physics2D.Raycast(bottomCenter + Vector2.left * playerSize.x * 0.5f, Vector2.down, boxHeight, platformLayer).collider;
+                rightObj = Physics2D.Raycast(bottomCenter + Vector2.right * playerSize.x * 0.5f, Vector2.down, boxHeight, platformLayer).collider;
+                if (leftObj != null) leftObj.GetComponent<Platform>().Disable(1);
+                if (rightObj != null) rightObj.GetComponent<Platform>().Disable(1);
+                Debug.Log("returned");
+
+                return;
+            }
+            // Debug.Log($"{jumpCount}");
+            if (!groundedJump) {
+                jumpCount++;
+                jumpVelocity = new Vector2(rb.velocity.x, extraJumpSpeed);
+            } else {
+                jumpVelocity = new Vector2(rb.velocity.x, jumpSpeed);
+            }
             jumpStart = Time.time;
             jumping = true;
-            jumpVelocity = new Vector2(rb.velocity.x, jumpSpeed);
         }
     }
 
