@@ -6,7 +6,7 @@ public class PlayerCombat : MonoBehaviour {
     [Header("Player ID")]
     private int id = 0;
 
-    [SerializeField] private Hitbox simpleHitbox;
+    [SerializeField] private Hitbox NrmAttHitbox;// Normal Attack 's Hitbox;
 
     [Header("Conponents")]
     private Rigidbody2D rb;
@@ -23,22 +23,22 @@ public class PlayerCombat : MonoBehaviour {
     }
 
     private void Update() {
-        anim.SetBool("SimpleAttack", InputManager.instance.Attack[id]);
-        anim.SetBool("SimpleBlock", InputManager.instance.Block[id]);
+        anim.SetBool("NormalAttack", InputManager.instance.Attack[id]);
+        anim.SetBool("Block", InputManager.instance.Block[id]);
     }
 
-    public void SimpleAttack() {
-        simpleHitbox.Activate();
+    public void NormalAttack() {
+        NrmAttHitbox.Activate();
     }
 
-    public void SimpleAttackEnd() {
-        simpleHitbox.Deactivate();
+    public void NormalAttackEnd() {
+        NrmAttHitbox.Deactivate();
     }
-    public void SimpleBlock()
+    public void Block()
     {
 
     }
-    public void SimpleBlockEnd()
+    public void BlockEnd()
     {
 
     }
