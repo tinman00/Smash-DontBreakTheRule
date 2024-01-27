@@ -24,6 +24,7 @@ public class PlayerCombat : MonoBehaviour {
 
     private void Update() {
         anim.SetBool("SimpleAttack", InputManager.instance.Attack[id]);
+        anim.SetBool("SimpleBlock", InputManager.instance.Block[id]);
     }
 
     public void SimpleAttack() {
@@ -32,5 +33,13 @@ public class PlayerCombat : MonoBehaviour {
 
     public void SimpleAttackEnd() {
         simpleHitbox.Deactivate();
+    }
+    public void SimpleBlock()
+    {
+
+    }
+    public void SimpleBlockEnd()
+    {
+
     }
 }
