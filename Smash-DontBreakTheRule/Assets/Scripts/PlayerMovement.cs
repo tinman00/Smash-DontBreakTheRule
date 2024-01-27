@@ -45,7 +45,21 @@ public class PlayerMovement : MonoBehaviour {
     private Vector2 topCenter => (Vector2)transform.position + Vector2.up * playerSize.y * 0.5f;
     private Vector2 bottomCenter => (Vector2)transform.position + Vector2.down * playerSize.y * 0.5f;
     private Vector2 boxSize => new Vector2(playerSize.x * 1f, boxHeight);
-    // Start is called before the first frame update
+
+    private class KnockBack {
+        public Vector2 force { get; private set; }
+        public float duration { get; private set; }
+        public float start { get; private set; }
+
+        public KnockBack(Vector2 _force, float _duration) {
+            force = _force;
+            duration = _duration;
+            start = Time.time;
+        }
+    }
+    [Header("Knockback Variables")]
+    private List<KnockBack> knockbacks = new();
+
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
         coll = GetComponent<BoxCollider2D>();
@@ -54,8 +68,9 @@ public class PlayerMovement : MonoBehaviour {
         id = plr.id;
     }
 
-    // Update is called once per frame
     void Update() {
+        if (plr.state.died) return;
+
         CheckCollision();
         GetInput();
         MoveCharacter();
@@ -71,6 +86,8 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     private void Flip() {
+        plr.state.isFacingRight = facingRight;
+        if (!plr.state.canFlip) return;
         if (dir.x == 0f) return;
         if (facingRight ^ dir.x > 0f) {
             facingRight = !facingRight;
@@ -150,7 +167,38 @@ public class PlayerMovement : MonoBehaviour {
 
     private void MoveCharacter() {
         // anim.SetBool("Running", dir.x != 0f);
-        rb.velocity = new Vector2(dir.x * moveSpeed, rb.velocity.y);
+        // rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+        if (plr.state.canMove) {
+            rb.velocity = new(dir.x * moveSpeed, rb.velocity.y);
+            anim.SetBool("Running", Mathf.Abs(dir.x) >= 0.1f);
+        } else {
+            if (!plr.state.hurted) {
+                rb.velocity = new(0, rb.velocity.y);
+            }
+            anim.SetBool("Running", false);
+        }
+    }
+    private void LateUpdate() {
+        Vector2 tmp = Vector2.zero;
+        for (var i = 0; i < knockbacks.Count; i++) {
+            tmp += knockbacks[i].force;
+        }
+        Vector2 v = Vector2.zero;
+        for (var i = 0; i < knockbacks.Count; i++) {
+            if (knockbacks[i].start + knockbacks[i].duration >= Time.time) {
+                v += knockbacks[i].force;
+            } else {
+                knockbacks.Remove(knockbacks[i]);
+            }
+        }
+        if (v != Vector2.zero) rb.velocity = v;
+        else if (tmp != Vector2.zero) {
+            rb.velocity = Vector2.zero;
+        }
+    }
+
+    public void Knockback(Vector2 force, float duration) {
+        knockbacks.Add(new KnockBack(force, duration));
     }
 
     private void OnDrawGizmos() {

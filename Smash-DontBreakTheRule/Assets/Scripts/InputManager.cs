@@ -61,7 +61,7 @@ public class InputManager : MonoBehaviour {
         }
         if (Input.GetMouseButton(1))
         {
-            Block[0] = true ;
+            Block[0] = true;
         }
 
         if (ry1 < -0.25f && JumpStart[0]) {
