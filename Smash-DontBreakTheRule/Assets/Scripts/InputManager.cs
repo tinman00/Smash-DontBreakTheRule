@@ -15,6 +15,9 @@ public class InputManager : MonoBehaviour {
     public bool[] Attack { get; private set; }
 
     public bool[] Block { get; private set; }
+    public bool[] SkillFirst { get; private set; }
+    public bool[] SkillSecond { get; private set; }
+    public bool[] Taunt { get; private set; } // verb. ≥∞∑Ì£ªÃÙ–∆
 
     public float lastAttackTime = float.NaN;
 
@@ -30,6 +33,8 @@ public class InputManager : MonoBehaviour {
         JumpEnd = new bool[2] { false, false };
         Attack = new bool[2] { false, false };
         Block = new bool[2] { false, false };
+        SkillFirst = new bool[2] { false, false };
+        SkillSecond = new bool[2] {false, false };
         DownJump = new bool[2] { false, false };
     }
 
@@ -50,11 +55,17 @@ public class InputManager : MonoBehaviour {
         JumpEnd[0] = JumpEnd[1] = false;
         Attack[0] = Attack[1] = false;
         Block[0] = Block[1] = false;
+        SkillFirst[0] = SkillFirst[1] = false;
+        SkillSecond[0] = SkillSecond[1] = false;
+        Taunt[0] = Taunt[1] = false;
         DownJump[0] = DownJump[1] = false;
 
         Jump[0] = Input.GetKey(KeyCode.Space);
         JumpStart[0] = Input.GetKeyDown(KeyCode.Space);
         JumpEnd[0] = Input.GetKeyUp(KeyCode.Space);
+        SkillFirst[0] = Input.GetKeyDown(KeyCode.Q);
+        SkillSecond[0] = Input.GetKeyDown(KeyCode.E);
+        Taunt[0] = Input.GetKeyDown(KeyCode.R);
 
         if (Input.GetMouseButtonDown(0)) {
             Attack[0] = true;
