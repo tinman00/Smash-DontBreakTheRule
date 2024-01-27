@@ -14,6 +14,8 @@ public class InputManager : MonoBehaviour {
     public bool[] DownJump { get; private set; }
     public bool[] Attack { get; private set; }
 
+    public bool[] Block { get; private set; }
+
     public float lastAttackTime = float.NaN;
 
     private void Start() {
@@ -27,6 +29,7 @@ public class InputManager : MonoBehaviour {
         JumpStart = new bool[2] { false, false };
         JumpEnd = new bool[2] { false, false };
         Attack = new bool[2] { false, false };
+        Block = new bool[2] { false, false };
         DownJump = new bool[2] { false, false };
     }
 
@@ -46,14 +49,21 @@ public class InputManager : MonoBehaviour {
         JumpStart[0] = JumpStart[1] = false;
         JumpEnd[0] = JumpEnd[1] = false;
         Attack[0] = Attack[1] = false;
+        Block[0] = Block[1] = false;
         DownJump[0] = DownJump[1] = false;
 
         Jump[0] = Input.GetKey(KeyCode.Space);
         JumpStart[0] = Input.GetKeyDown(KeyCode.Space);
         JumpEnd[0] = Input.GetKeyUp(KeyCode.Space);
+
         if (Input.GetMouseButtonDown(0)) {
             Attack[0] = true;
         }
+        if (Input.GetMouseButton(1))
+        {
+            Block[0] = true ;
+        }
+
         if (ry1 < -0.25f && JumpStart[0]) {
             DownJump[0] = true;
         }
