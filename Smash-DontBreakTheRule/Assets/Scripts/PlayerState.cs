@@ -12,4 +12,5 @@ public class PlayerState
     public bool canFlip;
     public bool stuned;
     public bool died;
+    public bool reviving;
 }

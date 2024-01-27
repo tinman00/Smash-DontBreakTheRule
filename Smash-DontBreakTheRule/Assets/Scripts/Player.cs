@@ -5,10 +5,12 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     public int id;
+    [SerializeField] private int totalLifeCount = 10;
     [SerializeField] private int maxHP = 20;
     [SerializeField] public int hp { private set; get; }
     [SerializeField] private float knockBack = 10f;
     [SerializeField] private float knockBackDuration = 0.2f;
+    [SerializeField] private Vector3[] spawnPoint;
 
     [Header("Conponents")]
     private Rigidbody2D rb;
@@ -28,7 +30,7 @@ public class Player : MonoBehaviour
     }
 
     private void Update() {
-        if (state.blocking || state.attacking || state.hurted || state.stuned) {
+        if (state.blocking || state.attacking || state.hurted || state.stuned || state.reviving) {
             Freeze();
         } else {
             Unfreeze();
@@ -37,7 +39,7 @@ public class Player : MonoBehaviour
             state.stuned = false;
             anim.SetBool("Stunning", false);
         }
-        if (hp == 0) {
+        if (hp == 0 && !state.died) {
             Die();
         }
     }
@@ -54,6 +56,7 @@ public class Player : MonoBehaviour
 
     public void Attacked(int damage, Vector2 direction, Player src)
     {
+        if (this.state.died) return;
         if (src == null) {
             hp -= damage;
         } else {
@@ -92,6 +95,20 @@ public class Player : MonoBehaviour
     public void Die() {
         anim.SetTrigger("Die");
         state.died = true;
+        totalLifeCount--;
+        if (totalLifeCount == 0) {
+            // End Game
+        }
+    }
 
+    public void Revive() {
+        hp = maxHP;
+        transform.position = spawnPoint[Random.Range(0, spawnPoint.Length)];
+        state.died = false;
+        state.reviving = true;
+    }
+
+    public void ReviveEnd() {
+        state.reviving = false;
     }
 }

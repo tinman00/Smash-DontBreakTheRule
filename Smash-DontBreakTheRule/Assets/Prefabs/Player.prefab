@@ -130,9 +130,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: 0
+  totalLifeCount: 10
   maxHP: 20
   knockBack: 10
   knockBackDuration: 0.2
+  spawnPoint:
+  - {x: -18, y: 9, z: 0}
+  - {x: 0, y: 9, z: 0}
+  - {x: 18, y: 9, z: 0}
 --- !u!114 &840508901576217173
 MonoBehaviour:
   m_ObjectHideFlags: 0

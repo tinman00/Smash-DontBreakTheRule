@@ -179,6 +179,9 @@ public class PlayerMovement : MonoBehaviour {
         }
     }
     private void LateUpdate() {
+        if (plr.state.died) {
+            knockbacks.Clear();
+        }
         Vector2 tmp = Vector2.zero;
         for (var i = 0; i < knockbacks.Count; i++) {
             tmp += knockbacks[i].force;
