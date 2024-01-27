@@ -25,21 +25,34 @@ public class PlayerCombat : MonoBehaviour {
     private void Update() {
         anim.SetBool("NormalAttack", InputManager.instance.Attack[id]);
         anim.SetBool("Block", InputManager.instance.Block[id]);
+        if (InputManager.instance.Block[id]) {
+            Block();
+        } else {
+            BlockEnd();
+        }
     }
 
+
     public void NormalAttack() {
-        NrmAttHitbox.Activate();
+        plr.state.attacking = true;
     }
 
     public void NormalAttackEnd() {
+        plr.state.attacking = false;
+    }
+
+    public void ActivateNrmHitbox() {
+        NrmAttHitbox.Activate();
+    }
+
+    public void DeactivateNrmHitbox() {
         NrmAttHitbox.Deactivate();
     }
     public void Block()
     {
-
+        plr.state.blocking = true;
     }
-    public void BlockEnd()
-    {
-
+    public void BlockEnd() {
+        plr.state.blocking = false;
     }
 }

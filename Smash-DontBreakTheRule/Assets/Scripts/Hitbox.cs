@@ -4,14 +4,14 @@ using UnityEngine;
 
 public class Hitbox : MonoBehaviour
 {
-    [SerializeField] private GameObject owner;
+    [SerializeField] private Player owner;
     [SerializeField] private int damage;
     private int ownerIdentity;
     private bool isActive;
     private List<GameObject> list;
 
     private void Awake() {
-        ownerIdentity = owner.GetComponent<Player>().id;
+        ownerIdentity = owner.id;
         list = new();
     }
 
@@ -27,7 +27,7 @@ public class Hitbox : MonoBehaviour
 
             var plr = other.GetComponent<Player>();
             Vector2 direction = other.transform.position - owner.transform.position;
-            plr.Attacked(damage, direction);
+            plr.Attacked(damage, direction, owner);
         }
     }
     private void OnTriggerStay2D(Collider2D other) {
@@ -38,7 +38,7 @@ public class Hitbox : MonoBehaviour
 
             var plr = other.GetComponent<Player>();
             Vector2 direction = other.transform.position - owner.transform.position;
-            plr.Attacked(damage, direction);
+            plr.Attacked(damage, direction, owner);
         }
     }
 
@@ -47,6 +47,7 @@ public class Hitbox : MonoBehaviour
     }
 
     public void Deactivate() {
+        isActive = false;
         list.Clear();
     }
 }
