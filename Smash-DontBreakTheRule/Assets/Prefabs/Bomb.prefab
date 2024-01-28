@@ -106,6 +106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0f36870dc2c5694b85eaa1709adbe6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shockWave: {fileID: 1010006640942421177, guid: 9977492e6c382e1448448c79a20d5876, type: 3}
   radius: 5.2
 --- !u!1 &7879955982590689695
 GameObject:
@@ -159,7 +160,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
