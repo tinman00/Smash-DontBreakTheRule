@@ -91,10 +91,29 @@ public class PlayerMovement : MonoBehaviour {
             shoe = false;
         }
 
-        foreach (var t in flipHistory) {
-            if (t + 8f < Time.time) {
+        if (RuleManager.instance.HasRule[(int)Rule.Turn]) {
+            List<float> tmp = new();
+            foreach (var t in flipHistory) {
+                if (t + 8f < Time.time) {
+                    tmp.Add(t);
+                }
+            }
+            foreach (var t in tmp) {
                 flipHistory.Remove(t);
             }
+        } else {
+            flipHistory.Clear();
+        }
+
+        if (RuleManager.instance.HasRule[(int)Rule.Jump]) {
+            if (float.IsNaN(jumpRuleTime))
+                jumpRuleTime = Time.time + 5f;
+            if (!float.IsNaN(jumpRuleTime) && Time.time > jumpRuleTime) {
+                RuleManager.instance.BreakRule(Rule.Jump, plr);
+                jumpRuleTime = float.NaN;
+            }
+        } else {
+            jumpRuleTime = float.NaN;
         }
     }
     
@@ -141,6 +160,10 @@ public class PlayerMovement : MonoBehaviour {
         if (roofed) {
             JumpEnd(false);
         }
+        var coll = Physics2D.Raycast(bottomCenter + Vector2.down * boxHeight * 0.5f, Vector2.down, boxHeight).collider;
+        if (coll != null && coll.tag != "Gold") {
+            RuleManager.instance.BreakRule(Rule.StandingNotOnGold, plr);
+        }
     }
 
     private void Jump() {
@@ -158,7 +181,7 @@ public class PlayerMovement : MonoBehaviour {
                 rightObj = Physics2D.Raycast(bottomCenter + Vector2.right * playerSize.x * 0.5f, Vector2.down, boxHeight, platformLayer).collider;
                 if (leftObj != null) leftObj.GetComponent<Platform>().Disable(id + 1);
                 if (rightObj != null) rightObj.GetComponent<Platform>().Disable(id + 1);
-                Debug.Log("returned");
+                // Debug.Log("down jump");
 
                 return;
             }
@@ -171,8 +194,13 @@ public class PlayerMovement : MonoBehaviour {
             }
             jumpStart = Time.time;
             jumping = true;
+            if (RuleManager.instance.HasRule[(int)Rule.Jump]) {
+                jumpRuleTime = Time.time + 5f;
+            }
         }
     }
+
+    private float jumpRuleTime = float.NaN;
 
     private void JumpPhysics() {
         if (!jumping) return;
@@ -221,6 +249,19 @@ public class PlayerMovement : MonoBehaviour {
             rb.velocity = new(rb.velocity.x * shoeBoost, rb.velocity.y);
         }
     }
+    private float stopLimit = float.NaN;
+    private void FixedUpdate() {
+        if (!RuleManager.instance.HasRule[(int)Rule.Stop]) {
+            stopLimit = float.NaN;
+        }
+        if (rb.velocity.magnitude >= 0.01f) {
+            stopLimit = float.NaN;
+        } else {
+            if (float.IsNaN(stopLimit))
+                stopLimit = Time.fixedTime + 3f;
+        }
+    }
+
     private void LateUpdate() {
         if (plr.state.died) {
             knockbacks.Clear();
@@ -240,6 +281,12 @@ public class PlayerMovement : MonoBehaviour {
         if (v != Vector2.zero) rb.velocity = v;
         else if (tmp != Vector2.zero) {
             rb.velocity = Vector2.zero;
+        }
+        if (RuleManager.instance.HasRule[(int)Rule.Stop]
+            && !float.IsNaN(stopLimit)
+            && Time.time > stopLimit) {
+            RuleManager.instance.BreakRule(Rule.Stop, plr);
+            stopLimit = float.NaN;
         }
     }
 

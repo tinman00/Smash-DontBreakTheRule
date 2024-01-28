@@ -54,6 +54,10 @@ public class PlayerCombat : MonoBehaviour {
                         (plr.state.isFacingRight ? Vector2.right : Vector2.left) * throwingForce, ForceMode2D.Impulse);
                     break;
             }
+            if (RuleManager.instance.HasRule[(int)Rule.UseItem]) {
+                anim.SetBool("SpecialAttack", false);
+                RuleManager.instance.BreakRule(Rule.UseItem, plr);
+            }
         }
         if (InputManager.instance.Skill1[id]) {
             var item = plr.items.Use(0);
@@ -73,6 +77,10 @@ public class PlayerCombat : MonoBehaviour {
                     obj.GetComponent<Rigidbody2D>().AddForce(
                         (plr.state.isFacingRight ? Vector2.right : Vector2.left) * throwingForce, ForceMode2D.Impulse);
                     break;
+            }
+            if (RuleManager.instance.HasRule[(int)Rule.UseItem]) {
+                anim.SetBool("SpecialAttack", false);
+                RuleManager.instance.BreakRule(Rule.UseItem, plr);
             }
         }
     }

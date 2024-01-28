@@ -105,7 +105,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 38152640255202288, guid: a43e3a8b3b6e7da4582ead13a7c6be30, type: 3}
       propertyPath: m_Name
-      value: GoldPlatform
+      value: GoldPlatform Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 38152640255202288, guid: a43e3a8b3b6e7da4582ead13a7c6be30, type: 3}
+      propertyPath: m_TagString
+      value: Gold
       objectReference: {fileID: 0}
     - target: {fileID: 38152640255202289, guid: a43e3a8b3b6e7da4582ead13a7c6be30, type: 3}
       propertyPath: m_RootOrder

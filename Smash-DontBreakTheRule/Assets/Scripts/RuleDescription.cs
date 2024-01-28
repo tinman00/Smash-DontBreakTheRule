@@ -31,7 +31,7 @@ public class RuleDescription : MonoBehaviour
         "",
         "Don't turn 5 times in 8s",
         "Don't stop for 3s",
-        "Jump in every 4s",
+        "Jump in every 5s",
         "Don't stay at the left",
         "Don't stay at the right",
         "Land only on gold",

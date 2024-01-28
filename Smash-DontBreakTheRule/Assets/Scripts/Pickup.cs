@@ -34,6 +34,21 @@ public class Pickup : MonoBehaviour
             if (!plr.CanPick()) return;
             plr.AddPickup(type);
             Pick();
+            if (type != PickUp.None && RuleManager.instance.HasRule[(int)Rule.PickItem]) {
+                RuleManager.instance.BreakRule(Rule.PickItem, plr);
+            }
+        }
+    }
+
+    private void OnTriggerStay2D(Collider2D other) {
+        if (other.tag == "Player") {
+            var plr = other.gameObject.GetComponent<Player>();
+            if (!plr.CanPick()) return;
+            plr.AddPickup(type);
+            Pick();
+            if (type != PickUp.None && RuleManager.instance.HasRule[(int)Rule.PickItem]) {
+                RuleManager.instance.BreakRule(Rule.PickItem, plr);
+            }
         }
     }
 

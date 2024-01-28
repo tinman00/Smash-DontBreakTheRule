@@ -123,6 +123,9 @@ public class Player : MonoBehaviour
                 move.Knockback(vec * knockBack, knockBackDuration);
                 state.attacking = state.blocking = state.stuned = false;
                 hp -= damage;
+                if (RuleManager.instance.HasRule[(int)Rule.NotHurtOpponent]) {
+                    RuleManager.instance.BreakRule(Rule.NotHurtOpponent, src);
+                }
             }
         }
         if (hp <= 0) {

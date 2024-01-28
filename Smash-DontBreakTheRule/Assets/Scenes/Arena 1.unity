@@ -120300,8 +120300,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5960126db81078449a48f9f28b6b5fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rulePeriod: 6
-  newRuleTime: 2
+  shockWave: {fileID: 1010006640942421177, guid: 9977492e6c382e1448448c79a20d5876, type: 3}
+  shockWaveSpawn: {fileID: 2142525864}
+  rulePeriod: 3
+  newRuleTime: 0
   description: {fileID: 1325995883}
   annouce: {fileID: 1289456415}
   countText: {fileID: 366311709}
@@ -122966,6 +122968,37 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2063548240}
   m_CullTransparentMesh: 1
+--- !u!1 &2142525863
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2142525864}
+  m_Layer: 0
+  m_Name: RuleShockWaveSpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2142525864
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2142525863}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -6.76, y: 16.04, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 22
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &38152640434272108
 PrefabInstance:
   m_ObjectHideFlags: 0

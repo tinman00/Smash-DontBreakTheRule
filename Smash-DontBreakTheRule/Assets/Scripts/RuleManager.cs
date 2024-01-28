@@ -85,8 +85,9 @@ public class RuleManager : MonoBehaviour
 
     public void BreakRule(Rule r, Player plr) {
         // debug
-        if (r != Rule.Turn) return;
+        if (r != Rule.Have2Item) return;
 
+        plr.Attacked(20, new(), null);
         plr.Attacked(20, new(), null);
         annouce.SetRule(r);
         ruleBreaked = true;

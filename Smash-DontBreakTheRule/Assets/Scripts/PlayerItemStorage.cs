@@ -22,6 +22,9 @@ public class PlayerItemStorage : MonoBehaviour
         cnt = 0;
     }
     private void Update() {
+        if (cnt == 2 && RuleManager.instance.HasRule[(int)Rule.Have2Item]) {
+            RuleManager.instance.BreakRule(Rule.Have2Item, GetComponent<Player>());
+        }
         switch(pickups[0]) {
             case PickUp.None:
                 skl1.sprite = None;
