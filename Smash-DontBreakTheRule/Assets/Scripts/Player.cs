@@ -50,6 +50,18 @@ public class Player : MonoBehaviour
             RemoveShield();
         }
     }
+    public float GetMaxHP()
+    {
+
+        return maxHP;
+    }
+    public float GetHP() {
+        return hp;
+    }
+    public int Getotallifecount() {
+
+        return totalLifeCount;
+    }
 
     public void StuneEnd() {
         state.stuned = false;
