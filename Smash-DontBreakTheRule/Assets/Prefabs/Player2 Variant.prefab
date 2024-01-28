@@ -9,7 +9,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 840508901576217169, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
       propertyPath: m_Name
-      value: Player2
+      value: Player2 Variant
       objectReference: {fileID: 0}
     - target: {fileID: 840508901576217169, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
       propertyPath: m_Layer
@@ -58,6 +58,18 @@ PrefabInstance:
     - target: {fileID: 840508901576217179, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 840508902620405620, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9345feea5e209e94d961d0e54320534d, type: 3}
+    - target: {fileID: 840508902620405621, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 840508902620405621, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 1728992311258890348, guid: 9bc66d0427eed174db705ee99ee49fb4, type: 3}
       propertyPath: id
