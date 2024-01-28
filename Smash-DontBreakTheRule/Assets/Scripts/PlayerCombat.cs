@@ -10,6 +10,7 @@ public class PlayerCombat : MonoBehaviour {
     [SerializeField] private Hitbox SplAttHitbox;// Special Attack 's Hitbox;
     [SerializeField] private GameObject Bomb;
     [SerializeField] private float throwingForce;
+    [SerializeField] private Animator emote;
 
     [Header("Conponents")]
     private Rigidbody2D rb;
@@ -27,6 +28,8 @@ public class PlayerCombat : MonoBehaviour {
         id = plr.id;
     }
 
+    private float emoteRuleTime = float.NaN;
+
     private void Update() {
         anim.SetBool("NormalAttack", InputManager.instance.Attack[id]);
         anim.SetBool("Block", InputManager.instance.Block[id]);
@@ -35,6 +38,24 @@ public class PlayerCombat : MonoBehaviour {
         } else {
             BlockEnd();
         }
+        if (InputManager.instance.Taunt[id]) {
+            emote.SetTrigger("Laugh");
+            if (RuleManager.instance.HasRule[(int)Rule.NotEmote]) {
+                emoteRuleTime = Time.time + 5f;
+            }
+        }
+
+        if (RuleManager.instance.HasRule[(int)Rule.NotEmote]) {
+            if (float.IsNaN(emoteRuleTime))
+                emoteRuleTime = Time.time + 5f;
+            if (!float.IsNaN(emoteRuleTime) && Time.time > emoteRuleTime) {
+                RuleManager.instance.BreakRule(Rule.NotEmote, plr);
+                emoteRuleTime = float.NaN;
+            }
+        } else {
+            emoteRuleTime = float.NaN;
+        }
+
         if (InputManager.instance.Skill2[id]) {
             var item = plr.items.Use(1);
             if (item == PickUp.None) return;

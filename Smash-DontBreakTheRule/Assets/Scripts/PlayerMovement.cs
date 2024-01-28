@@ -161,7 +161,7 @@ public class PlayerMovement : MonoBehaviour {
             JumpEnd(false);
         }
         var coll = Physics2D.Raycast(bottomCenter + Vector2.down * boxHeight * 0.5f, Vector2.down, boxHeight).collider;
-        if (coll != null && coll.tag != "Gold") {
+        if (coll != null && coll.tag != "Gold" && RuleManager.instance.HasRule[(int)Rule.StandingNotOnGold]) {
             RuleManager.instance.BreakRule(Rule.StandingNotOnGold, plr);
         }
     }

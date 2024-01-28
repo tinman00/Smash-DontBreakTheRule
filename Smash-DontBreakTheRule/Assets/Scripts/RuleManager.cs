@@ -10,6 +10,7 @@ public class RuleManager : MonoBehaviour
 
     public float rulePeriod = 40f;
     public float newRuleTime = 20f;
+    public float newRuleDelay = 8f;
 
     public static RuleManager instance;
     public RuleDescription description;
@@ -21,6 +22,8 @@ public class RuleManager : MonoBehaviour
     private int count = 0;
     public bool[] HasRule;
     private bool ruleBreaked = false;
+    Queue<float> waitingTime = new();
+    Queue<Rule> waitingList = new();
 
     private void Awake() {
         if (instance == null) instance = this;
@@ -49,6 +52,10 @@ public class RuleManager : MonoBehaviour
                 newRuleTime += rulePeriod;
             }
         }
+        while (waitingTime.Count >= 1 && waitingTime.Peek() <= Time.time) {
+            waitingTime.Dequeue();
+            HasRule[(int)waitingList.Dequeue()] = true;
+        }
     }
 
     private void LateUpdate() {
@@ -60,6 +67,8 @@ public class RuleManager : MonoBehaviour
             countText.text = count.ToString();
             var shock = Instantiate(shockWave, shockWaveSpawn);
             shock.GetComponent<ShockWave>().CallShockWave();
+            waitingList.Clear();
+            waitingTime.Clear();
         }
     }
 
@@ -68,7 +77,9 @@ public class RuleManager : MonoBehaviour
         anim.SetTrigger("New");
         if (description.current != Rule.None)
             count++;
-        HasRule[(int)r] = true;
+        // HasRule[(int)r] = true;
+        waitingList.Enqueue(r);
+        waitingTime.Enqueue(Time.time + newRuleDelay);
     }
 
     public void UpdateRule() {
@@ -85,7 +96,7 @@ public class RuleManager : MonoBehaviour
 
     public void BreakRule(Rule r, Player plr) {
         // debug
-        if (r != Rule.Have2Item) return;
+        // if (r != Rule.NotEmote) return;
 
         plr.Attacked(20, new(), null);
         plr.Attacked(20, new(), null);

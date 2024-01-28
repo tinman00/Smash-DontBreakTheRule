@@ -15,6 +15,7 @@ public class InputManager : MonoBehaviour {
     public bool[] Attack { get; private set; }
     public bool[] Skill1 { get; private set; }
     public bool[] Skill2 { get; private set; }
+    public bool[] Taunt { get; private set; }
 
     public bool[] Block { get; private set; }
 
@@ -35,13 +36,14 @@ public class InputManager : MonoBehaviour {
         DownJump = new bool[2] { false, false };
         Skill1 = new bool[2] { false, false };
         Skill2 = new bool[2] { false, false };
+        Taunt = new bool[2] { false, false };
     }
 
     private void Update() {
-        float x1 = Input.GetAxis("Horizontal"), y1 = Input.GetAxis("Vertical");
-        float x2 = Input.GetAxis("Horizontal1"), y2 = Input.GetAxis("Vertical1");
-        float rx1 = Input.GetAxisRaw("Horizontal"), ry1 = Input.GetAxisRaw("Vertical");
-        float rx2 = Input.GetAxisRaw("Horizontal1"), ry2 = Input.GetAxisRaw("Vertical1");
+        float x1 = Input.GetAxis("Horizontal1"), y1 = Input.GetAxis("Vertical1");
+        float x2 = Input.GetAxis("Horizontal2"), y2 = Input.GetAxis("Vertical2");
+        float rx1 = Input.GetAxisRaw("Horizontal1"), ry1 = Input.GetAxisRaw("Vertical1");
+        float rx2 = Input.GetAxisRaw("Horizontal2"), ry2 = Input.GetAxisRaw("Vertical2");
         GetAxisHorizontal[0] = x1;
         GetAxisHorizontal[1] = x2;
         GetAxisVertical[0] = y1;
@@ -56,14 +58,14 @@ public class InputManager : MonoBehaviour {
         Skill1[0] = Skill1[1] = false;
         Skill2[0] = Skill2[1] = false;
 
-        Jump[0] = Input.GetButton("Jump");
-        JumpStart[0] = Input.GetButtonDown("Jump");
-        JumpEnd[0] = Input.GetButtonUp("Jump");
+        Jump[0] = Input.GetButton("Jump1");
+        JumpStart[0] = Input.GetButtonDown("Jump1");
+        JumpEnd[0] = Input.GetButtonUp("Jump1");
 
-        if (Input.GetButtonDown("Fire1")) {
+        if (Input.GetButtonDown("Fire11")) {
             Attack[0] = true;
         }
-        if (Input.GetButton("Fire2"))
+        if (Input.GetButton("Fire21"))
         {
             Block[0] = true;
         }
@@ -77,14 +79,14 @@ public class InputManager : MonoBehaviour {
         Skill1[1] = Input.GetButtonDown("Skill12");
         Skill2[1] = Input.GetButtonDown("Skill22");
 
-        Jump[1] = Input.GetButton("Jump1");
-        JumpStart[1] = Input.GetButtonDown("Jump1");
-        JumpEnd[1] = Input.GetButtonUp("Jump1");
+        Jump[1] = Input.GetButton("Jump2");
+        JumpStart[1] = Input.GetButtonDown("Jump2");
+        JumpEnd[1] = Input.GetButtonUp("Jump2");
 
-        if (Input.GetButtonDown("Fire11")) {
+        if (Input.GetButtonDown("Fire12")) {
             Attack[1] = true;
         }
-        if (Input.GetButton("Fire21"))
+        if (Input.GetButton("Fire22"))
         {
             Block[1] = true;
         }
@@ -92,5 +94,8 @@ public class InputManager : MonoBehaviour {
         if (ry1 < -0.25f && JumpStart[1]) {
             DownJump[1] = true;
         }
+
+        Taunt[0] = Input.GetButtonDown("Fire31");
+        Taunt[1] = Input.GetButtonDown("Fire32");
     }
 }
