@@ -35,7 +35,7 @@ public class RuleDescription : MonoBehaviour
         "Don't stay at the left",
         "Don't stay at the right",
         "Land only on gold",
-        "Don't pick",
+        "Don't pick an item",
         "Laugh in every 5s",
         "Don't use items",
         "Don't have 2 items",

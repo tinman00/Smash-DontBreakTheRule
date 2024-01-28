@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 public class RuleManager : MonoBehaviour
 {
+    public GameObject shockWave;
+    public Transform shockWaveSpawn;
+
     public float rulePeriod = 40f;
     public float newRuleTime = 20f;
 
@@ -17,9 +20,11 @@ public class RuleManager : MonoBehaviour
     private Rule tmp;
     private int count = 0;
     public bool[] HasRule;
+    private bool ruleBreaked = false;
 
     private void Awake() {
         if (instance == null) instance = this;
+        ruleBreaked = false;
     }
     void Start()
     {
@@ -46,6 +51,18 @@ public class RuleManager : MonoBehaviour
         }
     }
 
+    private void LateUpdate() {
+        if (ruleBreaked) {
+            ClearRule();
+            breakAnnounce.SetTrigger("Show");
+            anim.SetTrigger("Break");
+            ruleBreaked = false;
+            countText.text = count.ToString();
+            var shock = Instantiate(shockWave, shockWaveSpawn);
+            shock.GetComponent<ShockWave>().CallShockWave();
+        }
+    }
+
     public void AddRule(Rule r) {
         tmp = r;
         anim.SetTrigger("New");
@@ -60,14 +77,18 @@ public class RuleManager : MonoBehaviour
     }
 
     public void ClearRule() {
+        tmp = Rule.None;
         count = 0;
         HasRule = new bool[20];
         description.SetRule(Rule.None);
     }
 
-    public void BreakRule(Rule r) {
-        ClearRule();
+    public void BreakRule(Rule r, Player plr) {
+        // debug
+        if (r != Rule.Turn) return;
+
+        plr.Attacked(20, new(), null);
         annouce.SetRule(r);
-        breakAnnounce.SetTrigger("Show");
+        ruleBreaked = true;
     }
 }

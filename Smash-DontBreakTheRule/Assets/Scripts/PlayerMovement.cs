@@ -90,20 +90,40 @@ public class PlayerMovement : MonoBehaviour {
         if (Time.time > lastShoe + shoeTime) {
             shoe = false;
         }
-    }
 
+        foreach (var t in flipHistory) {
+            if (t + 8f < Time.time) {
+                flipHistory.Remove(t);
+            }
+        }
+    }
+    
     private void GetInput() {
         dir = new Vector2(InputManager.instance.GetAxisHorizontal[id], InputManager.instance.GetAxisVertical[id]);
     }
+
+    private List<float> flipHistory = new();
 
     private void Flip() {
         plr.state.isFacingRight = facingRight;
         if (!plr.state.canFlip) return;
         if (plr.state.attacking || plr.state.blocking) return;
         if (dir.x == 0f) return;
+        var ruleManager = RuleManager.instance;
+        if (!ruleManager.HasRule[(int)Rule.Turn]) {
+            flipHistory.Clear();
+        }
+
         if (facingRight ^ dir.x > 0f) {
             facingRight = !facingRight;
             transform.Rotate(new Vector3(0f, 180f, 0f));
+
+            if (ruleManager.HasRule[(int)Rule.Turn]) {
+                flipHistory.Add(Time.time);
+            }
+            if (flipHistory.Count >= 5) {
+                ruleManager.BreakRule(Rule.Turn, plr);
+            }
         }
     }
     public void AddShoe() {

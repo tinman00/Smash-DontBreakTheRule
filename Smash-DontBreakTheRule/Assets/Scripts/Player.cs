@@ -49,6 +49,16 @@ public class Player : MonoBehaviour
         if (shield != null && Time.time > shieldTime) {
             RemoveShield();
         }
+        var ruleManager = RuleManager.instance;
+        if (transform.position.x < 0) {
+            if (ruleManager.HasRule[(int)Rule.StayLeft]) {
+                ruleManager.BreakRule(Rule.StayLeft, this);
+            }
+        } else {
+            if (ruleManager.HasRule[(int)Rule.StayRight]) {
+                ruleManager.BreakRule(Rule.StayRight, this);
+            }
+        }
     }
 
     public void StuneEnd() {
