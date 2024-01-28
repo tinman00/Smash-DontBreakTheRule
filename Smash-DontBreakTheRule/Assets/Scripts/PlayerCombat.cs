@@ -40,6 +40,7 @@ public class PlayerCombat : MonoBehaviour {
             if (item == PickUp.None) return;
             switch(item) {
                 case PickUp.Shield:
+                    plr.AddShield();
                     break;
                 case PickUp.Shoe:
                     move.AddShoe();
@@ -59,6 +60,7 @@ public class PlayerCombat : MonoBehaviour {
             if (item == PickUp.None) return;
             switch (item) {
                 case PickUp.Shield:
+                    plr.AddShield();
                     break;
                 case PickUp.Shoe:
                     move.AddShoe();

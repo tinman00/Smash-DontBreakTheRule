@@ -21,7 +21,12 @@ public class Player : MonoBehaviour
     public PlayerItemStorage items;
 
     public PlayerState state = new();
+    public GameObject ShieldPrefab;
+    public float shieldDuration = 10f;
     private float stunedTime = 0f;
+    private float shieldTime = 0f;
+    private bool defending = false;
+    private GameObject shield;
 
     private void Awake() {
         rb = GetComponent<Rigidbody2D>();
@@ -46,6 +51,26 @@ public class Player : MonoBehaviour
         if (hp == 0 && !state.died) {
             Die();
         }
+        if (shield != null && Time.time > shieldTime) {
+            RemoveShield();
+        }
+    }
+
+    public void AddShield() {
+        shieldTime = Time.time + shieldDuration;
+        if (shield == null) {
+            shield = Instantiate(ShieldPrefab, transform);
+            defending = true;
+        }
+    }
+
+    public void RemoveShield() {
+        if (shield != null) {
+            shield.GetComponent<Shield>().destroy();
+        }
+        shield = null;
+        defending = false;
+        shieldTime = 0f;
     }
 
     public bool CanPick() {
@@ -71,6 +96,10 @@ public class Player : MonoBehaviour
     public void Attacked(int damage, Vector2 direction, Player src)
     {
         if (state.died || state.reviving) return;
+        if (defending) {
+            RemoveShield();
+            return;
+        }
         if (src == null) {
             hp -= damage;
         } else {

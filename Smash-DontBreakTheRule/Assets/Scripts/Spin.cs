@@ -6,8 +6,9 @@ public class Spin : MonoBehaviour
 {
     public float angularSpeed;
 
-    void Update()
+    void LateUpdate()
     {
-        transform.Rotate(new(0f, 0f, 1f), angularSpeed * Time.deltaTime);
+        transform.rotation = new Quaternion();
+        transform.Rotate(new(0f, 0f, 1f), angularSpeed * Time.time);
     }
 }
