@@ -136,8 +136,8 @@ public class PlayerMovement : MonoBehaviour {
                 rightObj == null) {
                 leftObj = Physics2D.Raycast(bottomCenter + Vector2.left * playerSize.x * 0.5f, Vector2.down, boxHeight, platformLayer).collider;
                 rightObj = Physics2D.Raycast(bottomCenter + Vector2.right * playerSize.x * 0.5f, Vector2.down, boxHeight, platformLayer).collider;
-                if (leftObj != null) leftObj.GetComponent<Platform>().Disable(1);
-                if (rightObj != null) rightObj.GetComponent<Platform>().Disable(1);
+                if (leftObj != null) leftObj.GetComponent<Platform>().Disable(id + 1);
+                if (rightObj != null) rightObj.GetComponent<Platform>().Disable(id + 1);
                 Debug.Log("returned");
 
                 return;

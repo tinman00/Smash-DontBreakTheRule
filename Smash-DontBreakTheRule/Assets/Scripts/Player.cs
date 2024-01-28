@@ -23,7 +23,6 @@ public class Player : MonoBehaviour
     public PlayerState state = new();
     public GameObject ShieldPrefab;
     public float shieldDuration = 10f;
-    private float stunedTime = 0f;
     private float shieldTime = 0f;
     private bool defending = false;
     private GameObject shield;
@@ -44,10 +43,6 @@ public class Player : MonoBehaviour
         } else {
             Unfreeze();
         }
-        if (Time.time > stunedTime) {
-            state.stuned = false;
-            anim.SetBool("Stunning", false);
-        }
         if (hp == 0 && !state.died) {
             Die();
         }
@@ -56,10 +51,14 @@ public class Player : MonoBehaviour
         }
     }
 
+    public void StuneEnd() {
+        state.stuned = false;
+    }
     public void AddShield() {
         shieldTime = Time.time + shieldDuration;
         if (shield == null) {
-            shield = Instantiate(ShieldPrefab, transform);
+            shield = Instantiate(ShieldPrefab);
+            shield.GetComponent<Shield>().target = transform;
             defending = true;
         }
     }
@@ -93,38 +92,38 @@ public class Player : MonoBehaviour
         state.canUseSkill = true;
     }
 
-    public void Attacked(int damage, Vector2 direction, Player src)
+    public bool Attacked(int damage, Vector2 direction, Player src)
     {
-        if (state.died || state.reviving) return;
+        if (state.died || state.reviving) return false;
         if (defending) {
             RemoveShield();
-            return;
+            return false;
         }
         if (src == null) {
             hp -= damage;
         } else {
             if (state.blocking && (state.isFacingRight ^ (Mathf.Sign(direction.x) == 1f))) {
-                src.Stune(0.5f);
+                src.Stune();
+                return false;
             } else {
                 anim.SetTrigger("Hurt");
                 rb.velocity = new();
                 Vector2 vec = new Vector2(Mathf.Sign(direction.x), 0.4f);
                 vec.Normalize();
                 move.Knockback(vec * knockBack, knockBackDuration);
-                state.attacking = state.blocking = false;
-                stunedTime = 0f;
+                state.attacking = state.blocking = state.stuned = false;
                 hp -= damage;
             }
         }
         if (hp <= 0) {
             hp = 0;
         }
+        return true;
     }
 
-    public void Stune(float duration) {
-        anim.SetBool("Stunning", true);
+    public void Stune() {
+        anim.SetTrigger("Stunned");
         state.stuned = true;
-        stunedTime = Time.time + duration;
     }
 
     public void Hurt() {

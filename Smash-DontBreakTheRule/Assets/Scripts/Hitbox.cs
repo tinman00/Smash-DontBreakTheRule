@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Hitbox : MonoBehaviour
 {
+    public bool isSpecial = false;
     [SerializeField] private Player owner;
     [SerializeField] private int damage;
     private int ownerIdentity;
@@ -26,8 +27,15 @@ public class Hitbox : MonoBehaviour
             list.Add(other.gameObject);
 
             var plr = other.GetComponent<Player>();
+            if (plr.id == ownerIdentity) return;
+            if (isSpecial) {
+                plr.Attacked(damage, new Vector2(), null);
+                return;
+            }
             Vector2 direction = other.transform.position - owner.transform.position;
-            plr.Attacked(damage, direction, owner);
+            if (!plr.Attacked(damage, direction, owner)) {
+                Deactivate();
+            }
         }
     }
     private void OnTriggerStay2D(Collider2D other) {
@@ -37,8 +45,15 @@ public class Hitbox : MonoBehaviour
             list.Add(other.gameObject);
 
             var plr = other.GetComponent<Player>();
+            if (plr.id == ownerIdentity) return;
+            if (isSpecial) {
+                plr.Attacked(damage, new Vector2(), null);
+                return;
+            }
             Vector2 direction = other.transform.position - owner.transform.position;
-            plr.Attacked(damage, direction, owner);
+            if (!plr.Attacked(damage, direction, owner)) {
+                Deactivate();
+            }
         }
     }
 
