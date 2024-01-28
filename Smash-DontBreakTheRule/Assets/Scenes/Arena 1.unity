@@ -123150,6 +123150,8 @@ MonoBehaviour:
   Healthbar2: {fileID: 1512628872}
   player1: {fileID: 1378104810}
   player2: {fileID: 638588516}
+  PlayerLifeText1: {fileID: 835560078}
+  PlayerLifeText2: {fileID: 1086332596}
 --- !u!1001 &1825103843
 PrefabInstance:
   m_ObjectHideFlags: 0
